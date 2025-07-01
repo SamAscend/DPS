@@ -1,26 +1,41 @@
-const express = require('express');
-const cors = require('cors');
-const app = express();
-const PORT = 5000;
+const backendHttp = 'http://localhost:5000/notes';
+const socket = io('http://localhost:5000');
 
-app.use(cors());
-app.use(express.json());
+function appendNote(note) {
+  const li = document.createElement('li');
+  li.textContent = note.text;
+  document.getElementById('notesList').appendChild(li);
+}
 
-let notes = [
-  { id: 1, text: "First note" },
-];
+async function fetchNotes() {
+  const res = await fetch(backendHttp);
+  const notes = await res.json();
+  const list = document.getElementById('notesList');
+  list.innerHTML = '';
+  notes.forEach(appendNote);
+}
 
-app.get('/notes', (req, res) => {
-  res.json(notes);
+async function addNote() {
+  const input = document.getElementById('noteInput');
+  const text = input.value.trim();
+  if (!text) {
+    alert('Note cannot be empty!');
+    return;
+  }
+
+  await fetch(backendHttp, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text })
+  });
+
+  input.value = '';
+}
+
+// Listen for new notes from server
+socket.on('note_added', (note) => {
+  appendNote(note);
 });
 
-app.post('/notes', (req, res) => {
-  const { text } = req.body;
-  const newNote = { id: notes.length + 1, text };
-  notes.push(newNote);
-  res.status(201).json(newNote);
-});
-
-app.listen(PORT, () => {
-  console.log(`Backend running on http://localhost:${PORT}`);
-});
+// Load notes initially
+fetchNotes();

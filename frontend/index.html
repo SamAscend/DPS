@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Notes App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>📝 Notes</h1>
+
+    <div class="input-area">
+      <input type="text" id="noteInput" placeholder="Write a note..." />
+      <button onclick="addNote()">Add</button>
+    </div>
+
+    <ul id="notesList"></ul>
+  </div>
+
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>
