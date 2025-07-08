@@ -5,10 +5,19 @@ services:
     build: ./backend
     ports:
       - "5000:5000"
-  
+    restart: always
+    networks:
+      - noteapp-network
+
   frontend:
     build: ./frontend
     ports:
-      - "3000:80"  # NGINX serves HTML on port 80 inside the container
+      - "3000:80"  # Port host:container
     depends_on:
       - backend
+    restart: always
+    networks:
+      - noteapp-network
+
+networks:
+  noteapp-network:
